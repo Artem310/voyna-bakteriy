@@ -132,6 +132,7 @@ MonoBehaviour:
   allColonies:
   - {fileID: 800}
   - {fileID: 900}
+  tutorialManager: {fileID: 1300}
 --- !u!114 &203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -593,7 +594,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1101
 Transform:
   m_ObjectHideFlags: 0
@@ -652,6 +653,53 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1300
+GameObject:
+  m_ObjectHideFlags: 0
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1301}
+  - component: {fileID: 1302}
+  m_Layer: 0
+  m_Name: TutorialManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1301
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1300}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+--- !u!114 &1302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abc456def789012345678901234567890, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tutorialFingerObject: {fileID: 1100}
+  tutorialFingerRenderer: {fileID: 1102}
+  dashedLineRenderer: {fileID: 0}
+  animationDuration: 2
+  dashLength: 0.2
+  dashGap: 0.1
+  playerColony: {fileID: 803}
+  enemyColony: {fileID: 903}
 --- !u!1 &800
 GameObject:
   m_ObjectHideFlags: 0

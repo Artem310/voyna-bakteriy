@@ -17,6 +17,9 @@ public class BattleManager : MonoBehaviour
     [Header("Colonies")]
     [SerializeField] private List<Colony> allColonies = new List<Colony>();
     
+    [Header("Tutorial")]
+    [SerializeField] private TutorialManager tutorialManager;
+    
     private bool gameEnded = false;
     
     public GameConfig Config => config;
@@ -66,6 +69,11 @@ public class BattleManager : MonoBehaviour
         
         if (source.TryRemoveUnits(unitsToSend))
         {
+            if (tutorialManager != null)
+            {
+                tutorialManager.OnTentacleLaunchRequested();
+            }
+            
             GameObject tentacleObj = Instantiate(tentaclePrefab, source.Position, Quaternion.identity);
             Tentacle tentacle = tentacleObj.GetComponent<Tentacle>();
             
