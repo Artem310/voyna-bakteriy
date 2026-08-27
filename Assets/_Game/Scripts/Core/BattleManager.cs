@@ -59,6 +59,9 @@ public class BattleManager : MonoBehaviour
     
     private void InitializeEnemyAI()
     {
+        if (config == null || config.currentLevel < config.aiEnabledFromLevel)
+            return;
+        
         if (FindObjectOfType<EnemyAI>() == null)
         {
             gameObject.AddComponent<EnemyAI>();

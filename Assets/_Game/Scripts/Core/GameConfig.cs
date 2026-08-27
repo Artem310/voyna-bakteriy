@@ -8,7 +8,8 @@ public class GameConfig : ScriptableObject
     public float tentacleSpeed = 5f;
     public float unitTransferRate = 10f;
     
-    [Header("Level 1 Settings")]
+    [Header("Level Settings")]
+    public int currentLevel = 1;
     public int playerStartUnits = 50;
     public int enemyStartUnits = 15;
     
@@ -22,4 +23,5 @@ public class GameConfig : ScriptableObject
     
     [Header("Enemy AI")]
     public float aiActionInterval = 4f;
+    public int aiEnabledFromLevel = 2;
 }
