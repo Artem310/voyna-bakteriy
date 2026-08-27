@@ -35,10 +35,18 @@ public class DefeatOverlay : MonoBehaviour
     public void OnRestartClicked()
     {
         Hide();
+        if (GameSceneManager.Instance != null)
+        {
+            GameSceneManager.Instance.RestartBattle();
+        }
     }
 
     public void OnMenuClicked()
     {
         Hide();
+        if (GameSceneManager.Instance != null)
+        {
+            GameSceneManager.Instance.LoadMainMenu();
+        }
     }
 }
