@@ -17,12 +17,12 @@ MonoBehaviour:
   unitTransferRate: 10
   currentLevel: 1
   levels:
-  - {fileID: 11400000, guid: 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d, type: 2}
-  - {fileID: 11400000, guid: 2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e, type: 2}
-  - {fileID: 11400000, guid: 3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f, type: 2}
-  - {fileID: 11400000, guid: 4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f90, type: 2}
-  - {fileID: 11400000, guid: 5e6f7a8b9c0d1e2f3a4b5c6d7e8f9012, type: 2}
-  - {fileID: 11400000, guid: 6f7a8b9c0d1e2f3a4b5c6d7e8f901234, type: 2}
+  - {fileID: 11400000, guid: 2986b561ef629fd69227aee8cb573344, type: 2}
+  - {fileID: 11400000, guid: b75fcda0fe3af6af8baba959eab63451, type: 2}
+  - {fileID: 11400000, guid: 2f1cb9f75a6ed404f2556ffc16386688, type: 2}
+  - {fileID: 11400000, guid: 09c4c9efe3c86f1c31080e5d68ebc8f9, type: 2}
+  - {fileID: 11400000, guid: f7f9940cd687933521dae40053b922f3, type: 2}
+  - {fileID: 11400000, guid: ce463725342e388e157ccf5642f5aed5, type: 2}
   colonyRadius: 1
   captureThreshold: 1
   tentacleMinMass: 10

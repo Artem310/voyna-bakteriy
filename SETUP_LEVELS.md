@@ -33,16 +33,15 @@ Six LevelDefinition assets are committed in `Assets/_Game/Resources/Levels/` wit
 - VictoryOverlay with Continue button (shows L1-L5, hidden after L6)
 - Level 1 colonies at (-3, 0) and (3, 0) with 50 vs 15 mass
 
-## Testing Checklist
+## Testing
 
-- [ ] Level 1: 2 colonies at (-2.5, 0) and (2.5, 0), 50 vs 15, no AI, no neutrals
-- [ ] Level 1 victory: Shows "Заново" and "Меню" only, no "Дальше"
-- [ ] Level 2: 4 colonies spawn at correct positions, neutrals use neutral sprite, AI active
-- [ ] Level 2-5 victory: Shows "Дальше", "Заново", "Меню"
-- [ ] "Дальше" button: Loads next level correctly
-- [ ] Level 6 victory: No "Дальше" button shown
-- [ ] Neutral colonies: Don't grow, can be captured, use spr_colony_neutral
-- [ ] PlayerPrefs: Completed level persists, menu Play loads first uncompleted
+- Level 1: 2 colonies at (-3, 0) and (3, 0), 50 vs 15, no AI, no neutrals
+- Level 1 victory: Shows "Дальше", "Заново", "Меню"
+- Level 2-6: Spawn at correct GD positions, neutrals use spr_colony_neutral, AI active from L2
+- Levels 1-5 victory: "Дальше" button visible and functional
+- Level 6 victory: "Дальше" button hidden
+- Neutral colonies: Don't grow, can be captured
+- PlayerPrefs: Progress persists, menu Play loads first uncompleted
 
 ## Code Architecture
 
