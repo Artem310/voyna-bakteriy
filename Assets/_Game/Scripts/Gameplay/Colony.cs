@@ -22,10 +22,12 @@ public class Colony : MonoBehaviour
     [SerializeField] private Color neutralColor = new Color(0.5f, 0.5f, 0.5f);
     
     private GameConfig config;
+    private int activeTentacles = 0;
     
     public ColonyOwner Owner => owner;
     public float Units => units;
     public Vector3 Position => transform.position;
+    public int ActiveTentacles => activeTentacles;
     
     private void Start()
     {
@@ -37,7 +39,13 @@ public class Colony : MonoBehaviour
     {
         if (owner != ColonyOwner.Neutral)
         {
+            float previousUnits = units;
             units += config.growthPerSecond * Time.deltaTime;
+            
+            if (Mathf.Floor(previousUnits) != Mathf.Floor(units) && AudioService.Instance != null)
+            {
+                AudioService.Instance.PlayGrow();
+            }
         }
         
         UpdateUnitsDisplay();
@@ -59,6 +67,24 @@ public class Colony : MonoBehaviour
             return true;
         }
         return false;
+    }
+    
+    public bool CanLaunchTentacle()
+    {
+        if (config == null)
+            return false;
+        
+        return units >= config.tentacleMinMass && activeTentacles < config.maxTentaclesPerColony;
+    }
+    
+    public void RegisterTentacle()
+    {
+        activeTentacles++;
+    }
+    
+    public void UnregisterTentacle()
+    {
+        activeTentacles = Mathf.Max(0, activeTentacles - 1);
     }
     
     public void ReceiveUnits(float amount, ColonyOwner attacker)
@@ -85,6 +111,11 @@ public class Colony : MonoBehaviour
     {
         owner = newOwner;
         UpdateVisuals();
+        
+        if (AudioService.Instance != null)
+        {
+            AudioService.Instance.PlayCapture();
+        }
         
         if (owner == ColonyOwner.Player || owner == ColonyOwner.Enemy)
         {

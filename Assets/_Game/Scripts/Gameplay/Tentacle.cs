@@ -19,6 +19,11 @@ public class Tentacle : MonoBehaviour
         
         transform.position = source.Position;
         
+        if (sourceColony != null)
+        {
+            sourceColony.RegisterTentacle();
+        }
+        
         lineRenderer = GetComponent<LineRenderer>();
         if (lineRenderer != null)
         {
@@ -40,7 +45,7 @@ public class Tentacle : MonoBehaviour
     {
         if (sourceColony == null || targetColony == null)
         {
-            Destroy(gameObject);
+            CleanupAndDestroy();
             return;
         }
         
@@ -67,8 +72,25 @@ public class Tentacle : MonoBehaviour
             
             if (transferredUnits >= unitsToTransfer)
             {
-                Destroy(gameObject);
+                CleanupAndDestroy();
             }
+        }
+    }
+    
+    private void CleanupAndDestroy()
+    {
+        if (sourceColony != null)
+        {
+            sourceColony.UnregisterTentacle();
+        }
+        Destroy(gameObject);
+    }
+    
+    private void OnDestroy()
+    {
+        if (sourceColony != null)
+        {
+            sourceColony.UnregisterTentacle();
         }
     }
 }

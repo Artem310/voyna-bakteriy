@@ -38,6 +38,8 @@ public class BattleManager : MonoBehaviour
     {
         FindAllColonies();
         InitializeColonies();
+        InitializeEnemyAI();
+        InitializeAudioService();
     }
     
     private void FindAllColonies()
@@ -55,23 +57,51 @@ public class BattleManager : MonoBehaviour
         }
     }
     
+    private void InitializeEnemyAI()
+    {
+        if (config == null || config.currentLevel < config.aiEnabledFromLevel)
+            return;
+        
+        if (FindObjectOfType<EnemyAI>() == null)
+        {
+            gameObject.AddComponent<EnemyAI>();
+        }
+    }
+    
+    private void InitializeAudioService()
+    {
+        if (AudioService.Instance == null)
+        {
+            GameObject audioServiceObj = new GameObject("AudioService");
+            audioServiceObj.AddComponent<AudioService>();
+        }
+    }
+    
     public void CreateTentacle(Colony source, Colony target, float unitPercentage)
     {
         if (source == null || target == null || gameEnded)
             return;
         
-        if (source.Owner != ColonyOwner.Player)
+        if (source.Owner == ColonyOwner.Neutral)
+            return;
+        
+        if (!source.CanLaunchTentacle())
             return;
         
         float unitsToSend = source.Units * unitPercentage;
-        if (unitsToSend < 1f)
+        if (unitsToSend < config.tentacleMinMass)
             return;
         
         if (source.TryRemoveUnits(unitsToSend))
         {
-            if (tutorialManager != null)
+            if (tutorialManager != null && source.Owner == ColonyOwner.Player)
             {
                 tutorialManager.OnTentacleLaunchRequested();
+            }
+            
+            if (AudioService.Instance != null)
+            {
+                AudioService.Instance.PlayTentacleLaunch();
             }
             
             GameObject tentacleObj = Instantiate(tentaclePrefab, source.Position, Quaternion.identity);
@@ -105,6 +135,12 @@ public class BattleManager : MonoBehaviour
     private void Victory()
     {
         gameEnded = true;
+        
+        if (AudioService.Instance != null)
+        {
+            AudioService.Instance.PlayVictory();
+        }
+        
         if (victoryOverlay != null)
         {
             victoryOverlay.Show();
@@ -114,6 +150,12 @@ public class BattleManager : MonoBehaviour
     private void Defeat()
     {
         gameEnded = true;
+        
+        if (AudioService.Instance != null)
+        {
+            AudioService.Instance.PlayDefeat();
+        }
+        
         if (defeatOverlay != null)
         {
             defeatOverlay.Show();
@@ -131,5 +173,15 @@ public class BattleManager : MonoBehaviour
             }
         }
         return null;
+    }
+    
+    public List<Colony> GetAllColonies()
+    {
+        return new List<Colony>(allColonies);
+    }
+    
+    public bool IsGameEnded()
+    {
+        return gameEnded;
     }
 }

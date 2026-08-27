@@ -15,7 +15,12 @@ MonoBehaviour:
   growthPerSecond: 3
   tentacleSpeed: 5
   unitTransferRate: 10
+  currentLevel: 1
   playerStartUnits: 50
   enemyStartUnits: 15
   colonyRadius: 1
   captureThreshold: 1
+  tentacleMinMass: 10
+  maxTentaclesPerColony: 2
+  aiActionInterval: 4
+  aiEnabledFromLevel: 2
