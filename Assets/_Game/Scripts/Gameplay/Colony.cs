@@ -102,6 +102,9 @@ public class Colony : MonoBehaviour
                 ColonyOwner.Enemy => enemyColor,
                 _ => neutralColor
             };
+            
+            float scale = Mathf.Lerp(0.5f, 2f, Mathf.Clamp01(units / 100f));
+            transform.localScale = Vector3.one * scale;
         }
         UpdateUnitsDisplay();
     }
