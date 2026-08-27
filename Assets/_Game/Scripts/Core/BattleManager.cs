@@ -77,6 +77,11 @@ public class BattleManager : MonoBehaviour
                 tutorialManager.OnTentacleLaunchRequested();
             }
             
+            if (AudioService.Instance != null)
+            {
+                AudioService.Instance.PlayTentacleLaunch();
+            }
+            
             GameObject tentacleObj = Instantiate(tentaclePrefab, source.Position, Quaternion.identity);
             Tentacle tentacle = tentacleObj.GetComponent<Tentacle>();
             
@@ -108,6 +113,12 @@ public class BattleManager : MonoBehaviour
     private void Victory()
     {
         gameEnded = true;
+        
+        if (AudioService.Instance != null)
+        {
+            AudioService.Instance.PlayVictory();
+        }
+        
         if (victoryOverlay != null)
         {
             victoryOverlay.Show();
@@ -117,6 +128,12 @@ public class BattleManager : MonoBehaviour
     private void Defeat()
     {
         gameEnded = true;
+        
+        if (AudioService.Instance != null)
+        {
+            AudioService.Instance.PlayDefeat();
+        }
+        
         if (defeatOverlay != null)
         {
             defeatOverlay.Show();

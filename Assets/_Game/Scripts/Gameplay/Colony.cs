@@ -39,7 +39,13 @@ public class Colony : MonoBehaviour
     {
         if (owner != ColonyOwner.Neutral)
         {
+            float previousUnits = units;
             units += config.growthPerSecond * Time.deltaTime;
+            
+            if (Mathf.Floor(previousUnits) != Mathf.Floor(units) && AudioService.Instance != null)
+            {
+                AudioService.Instance.PlayGrow();
+            }
         }
         
         UpdateUnitsDisplay();
@@ -105,6 +111,11 @@ public class Colony : MonoBehaviour
     {
         owner = newOwner;
         UpdateVisuals();
+        
+        if (AudioService.Instance != null)
+        {
+            AudioService.Instance.PlayCapture();
+        }
         
         if (owner == ColonyOwner.Player || owner == ColonyOwner.Enemy)
         {
