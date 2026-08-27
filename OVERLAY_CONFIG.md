@@ -42,5 +42,6 @@
 
 - Текстовые метки — TextMeshPro компоненты, не включены в текстуры
 - Дополнительные HUD-элементы из макетов не включены
-- Unity-сцены (Battle.unity) и скрипты оверлеев отсутствуют в репозитории
-- Для подключения спрайтов в Unity: назначить Image.sprite через Inspector или YAML сцены
+- C# скрипты добавлены: `Assets/Scripts/UI/VictoryOverlay.cs` и `DefeatOverlay.cs`
+- Полное руководство по настройке: `IMPLEMENTATION_GUIDE.md`
+- Battle.unity требует ручной настройки в Unity Editor
