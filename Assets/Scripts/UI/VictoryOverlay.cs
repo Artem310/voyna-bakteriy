@@ -29,7 +29,7 @@ public class VictoryOverlay : MonoBehaviour
     {
         overlayRoot.SetActive(true);
         
-        bool showContinue = currentLevel >= 2 && currentLevel < 6;
+        bool showContinue = currentLevel >= 1 && currentLevel < 6;
         continueButton.gameObject.SetActive(showContinue);
     }
 
