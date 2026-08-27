@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -6,19 +7,16 @@ public class AudioService : MonoBehaviour
 {
     public static AudioService Instance { get; private set; }
     
-    [Header("SFX Clips")]
-    [SerializeField] private AudioClip sfxTentacleLaunch;
-    [SerializeField] private AudioClip sfxTentacleLaunch02;
-    [SerializeField] private AudioClip sfxCapture;
-    [SerializeField] private AudioClip sfxCapture02;
-    [SerializeField] private AudioClip sfxGrow;
-    [SerializeField] private AudioClip sfxGrow02;
-    [SerializeField] private AudioClip sfxVictory;
-    [SerializeField] private AudioClip sfxDefeat;
-    
-    [Header("Music")]
-    [SerializeField] private AudioClip bgmBattle;
-    [SerializeField] private AudioClip bgmMenu;
+    private AudioClip sfxTentacleLaunch;
+    private AudioClip sfxTentacleLaunch02;
+    private AudioClip sfxCapture;
+    private AudioClip sfxCapture02;
+    private AudioClip sfxGrow;
+    private AudioClip sfxGrow02;
+    private AudioClip sfxVictory;
+    private AudioClip sfxDefeat;
+    private AudioClip bgmBattle;
+    private AudioClip bgmMenu;
     
     [Header("Audio Sources")]
     [SerializeField] private AudioSource sfxSource;
@@ -33,6 +31,7 @@ public class AudioService : MonoBehaviour
     
     private float lastGrowTime = 0f;
     private Coroutine fadeCoroutine;
+    private string currentSceneName;
     
     private void Awake()
     {
@@ -42,39 +41,52 @@ public class AudioService : MonoBehaviour
             return;
         }
         Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
     
     private void Start()
     {
         LoadAudioClips();
         SetupAudioSources();
-        PlayBattleMusic();
+        currentSceneName = SceneManager.GetActiveScene().name;
+        PlaySceneMusic();
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+    
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+    
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        string newSceneName = scene.name;
+        if (newSceneName != currentSceneName)
+        {
+            currentSceneName = newSceneName;
+            PlaySceneMusic();
+        }
     }
     
     private void LoadAudioClips()
     {
-        sfxGrow = LoadAudioClip("1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d");
-        sfxGrow02 = LoadAudioClip("2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e");
-        sfxTentacleLaunch = LoadAudioClip("3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f");
-        sfxTentacleLaunch02 = LoadAudioClip("4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a");
-        sfxCapture = LoadAudioClip("5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b");
-        sfxCapture02 = LoadAudioClip("6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c");
-        sfxVictory = LoadAudioClip("7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d");
-        sfxDefeat = LoadAudioClip("8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e");
-        bgmBattle = LoadAudioClip("9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f");
-        bgmMenu = LoadAudioClip("0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a");
-    }
-    
-    private AudioClip LoadAudioClip(string guid)
-    {
-#if UNITY_EDITOR
-        string assetPath = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
-        if (!string.IsNullOrEmpty(assetPath))
+        AudioLibrary library = Resources.Load<AudioLibrary>("AudioLibrary");
+        if (library == null)
         {
-            return UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>(assetPath);
+            Debug.LogWarning("AudioLibrary not found in Resources folder");
+            return;
         }
-#endif
-        return null;
+        
+        sfxGrow = library.sfxGrow;
+        sfxGrow02 = library.sfxGrow02;
+        sfxTentacleLaunch = library.sfxTentacleLaunch;
+        sfxTentacleLaunch02 = library.sfxTentacleLaunch02;
+        sfxCapture = library.sfxCapture;
+        sfxCapture02 = library.sfxCapture02;
+        sfxVictory = library.sfxVictory;
+        sfxDefeat = library.sfxDefeat;
+        bgmBattle = library.bgmBattle;
+        bgmMenu = library.bgmMenu;
     }
     
     private void SetupAudioSources()
@@ -170,9 +182,31 @@ public class AudioService : MonoBehaviour
         FadeOutMusic(0.4f);
     }
     
+    private void PlaySceneMusic()
+    {
+        if (currentSceneName == "Battle")
+        {
+            PlayBattleMusic();
+        }
+        else
+        {
+            PlayMenuMusic();
+        }
+    }
+    
     private void PlayBattleMusic()
     {
-        if (bgmBattle != null && musicSource != null)
+        if (bgmBattle == null || musicSource == null)
+            return;
+        
+        if (musicSource.isPlaying && musicSource.clip == bgmBattle)
+            return;
+        
+        if (musicSource.isPlaying && musicSource.clip != bgmBattle)
+        {
+            CrossfadeMusic(bgmBattle, 0.8f);
+        }
+        else
         {
             musicSource.clip = bgmBattle;
             musicSource.volume = 0f;
@@ -181,11 +215,24 @@ public class AudioService : MonoBehaviour
         }
     }
     
-    public void PlayMenuMusic()
+    private void PlayMenuMusic()
     {
-        if (bgmMenu != null && musicSource != null)
+        if (bgmMenu == null || musicSource == null)
+            return;
+        
+        if (musicSource.isPlaying && musicSource.clip == bgmMenu)
+            return;
+        
+        if (musicSource.isPlaying && musicSource.clip != bgmMenu)
         {
             CrossfadeMusic(bgmMenu, 0.8f);
+        }
+        else
+        {
+            musicSource.clip = bgmMenu;
+            musicSource.volume = 0f;
+            musicSource.Play();
+            FadeInMusic(0.8f, bgmVolume);
         }
     }
     
