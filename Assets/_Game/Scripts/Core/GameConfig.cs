@@ -15,4 +15,11 @@ public class GameConfig : ScriptableObject
     [Header("Colony Settings")]
     public float colonyRadius = 1f;
     public float captureThreshold = 1f;
+    
+    [Header("Tentacle Constraints")]
+    public float tentacleMinMass = 10f;
+    public int maxTentaclesPerColony = 2;
+    
+    [Header("Enemy AI")]
+    public float aiActionInterval = 4f;
 }

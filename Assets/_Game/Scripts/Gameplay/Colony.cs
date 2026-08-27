@@ -22,10 +22,12 @@ public class Colony : MonoBehaviour
     [SerializeField] private Color neutralColor = new Color(0.5f, 0.5f, 0.5f);
     
     private GameConfig config;
+    private int activeTentacles = 0;
     
     public ColonyOwner Owner => owner;
     public float Units => units;
     public Vector3 Position => transform.position;
+    public int ActiveTentacles => activeTentacles;
     
     private void Start()
     {
@@ -59,6 +61,24 @@ public class Colony : MonoBehaviour
             return true;
         }
         return false;
+    }
+    
+    public bool CanLaunchTentacle()
+    {
+        if (config == null)
+            return false;
+        
+        return units >= config.tentacleMinMass && activeTentacles < config.maxTentaclesPerColony;
+    }
+    
+    public void RegisterTentacle()
+    {
+        activeTentacles++;
+    }
+    
+    public void UnregisterTentacle()
+    {
+        activeTentacles = Mathf.Max(0, activeTentacles - 1);
     }
     
     public void ReceiveUnits(float amount, ColonyOwner attacker)

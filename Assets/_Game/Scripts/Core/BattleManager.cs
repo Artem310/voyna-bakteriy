@@ -60,16 +60,19 @@ public class BattleManager : MonoBehaviour
         if (source == null || target == null || gameEnded)
             return;
         
-        if (source.Owner != ColonyOwner.Player)
+        if (source.Owner == ColonyOwner.Neutral)
+            return;
+        
+        if (!source.CanLaunchTentacle())
             return;
         
         float unitsToSend = source.Units * unitPercentage;
-        if (unitsToSend < 1f)
+        if (unitsToSend < config.tentacleMinMass)
             return;
         
         if (source.TryRemoveUnits(unitsToSend))
         {
-            if (tutorialManager != null)
+            if (tutorialManager != null && source.Owner == ColonyOwner.Player)
             {
                 tutorialManager.OnTentacleLaunchRequested();
             }
@@ -131,5 +134,15 @@ public class BattleManager : MonoBehaviour
             }
         }
         return null;
+    }
+    
+    public List<Colony> GetAllColonies()
+    {
+        return new List<Colony>(allColonies);
+    }
+    
+    public bool IsGameEnded()
+    {
+        return gameEnded;
     }
 }
