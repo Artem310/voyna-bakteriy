@@ -25,9 +25,12 @@ public class VictoryOverlay : MonoBehaviour
         continueButton.gameObject.SetActive(false);
     }
 
-    public void Show()
+    public void Show(int currentLevel = 1)
     {
         overlayRoot.SetActive(true);
+        
+        bool showContinue = currentLevel >= 2 && currentLevel < 6;
+        continueButton.gameObject.SetActive(showContinue);
     }
 
     public void Hide()
@@ -37,7 +40,7 @@ public class VictoryOverlay : MonoBehaviour
 
     public void OnContinueClicked()
     {
-        Hide();
+        BattleManager.Instance?.LoadNextLevel();
     }
 
     public void OnRestartClicked()

@@ -13,6 +13,12 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private VictoryOverlay victoryOverlay;
     [SerializeField] private DefeatOverlay defeatOverlay;
     [SerializeField] private GameObject tentaclePrefab;
+    [SerializeField] private GameObject colonyPrefab;
+    
+    [Header("Colony Sprites")]
+    [SerializeField] private Sprite playerSprite;
+    [SerializeField] private Sprite enemySprite;
+    [SerializeField] private Sprite neutralSprite;
     
     [Header("Colonies")]
     [SerializeField] private List<Colony> allColonies = new List<Colony>();
@@ -36,24 +42,59 @@ public class BattleManager : MonoBehaviour
     
     private void Start()
     {
-        FindAllColonies();
-        InitializeColonies();
+        LoadCurrentLevel();
         InitializeEnemyAI();
         InitializeAudioService();
     }
     
-    private void FindAllColonies()
+    public void LoadCurrentLevel()
     {
-        allColonies.Clear();
-        allColonies.AddRange(FindObjectsOfType<Colony>());
+        ClearColonies();
+        
+        LevelDefinition levelDef = config.GetCurrentLevelDefinition();
+        if (levelDef == null)
+            return;
+        
+        config.aiActionInterval = levelDef.aiActionInterval;
+        
+        SpawnColoniesFromDefinition(levelDef);
     }
     
-    private void InitializeColonies()
+    private void ClearColonies()
     {
-        if (allColonies.Count >= 2)
+        foreach (var colony in allColonies)
         {
-            allColonies[0].Initialize(ColonyOwner.Player, config.playerStartUnits);
-            allColonies[1].Initialize(ColonyOwner.Enemy, config.enemyStartUnits);
+            if (colony != null)
+                Destroy(colony.gameObject);
+        }
+        allColonies.Clear();
+    }
+    
+    private void SpawnColoniesFromDefinition(LevelDefinition levelDef)
+    {
+        if (levelDef.colonies == null || colonyPrefab == null)
+            return;
+        
+        foreach (var spawnData in levelDef.colonies)
+        {
+            Vector3 worldPos = new Vector3(spawnData.position.x, spawnData.position.y, 0f);
+            GameObject colonyObj = Instantiate(colonyPrefab, worldPos, Quaternion.identity);
+            Colony colony = colonyObj.GetComponent<Colony>();
+            
+            if (colony != null)
+            {
+                SetColonySprites(colony);
+                colony.Initialize(spawnData.owner, spawnData.mass);
+                allColonies.Add(colony);
+            }
+        }
+    }
+    
+    private void SetColonySprites(Colony colony)
+    {
+        if (colony != null)
+        {
+            colony.SetSprites(playerSprite, enemySprite, neutralSprite);
         }
     }
     
@@ -136,6 +177,8 @@ public class BattleManager : MonoBehaviour
     {
         gameEnded = true;
         
+        SaveLevelProgress();
+        
         if (AudioService.Instance != null)
         {
             AudioService.Instance.PlayVictory();
@@ -143,7 +186,35 @@ public class BattleManager : MonoBehaviour
         
         if (victoryOverlay != null)
         {
-            victoryOverlay.Show();
+            victoryOverlay.Show(config.currentLevel);
+        }
+    }
+    
+    private void SaveLevelProgress()
+    {
+        int completedLevel = PlayerPrefs.GetInt("CompletedLevel", 0);
+        if (config.currentLevel > completedLevel)
+        {
+            PlayerPrefs.SetInt("CompletedLevel", config.currentLevel);
+            PlayerPrefs.Save();
+        }
+    }
+    
+    public void LoadNextLevel()
+    {
+        if (config.currentLevel < 6)
+        {
+            config.currentLevel++;
+            gameEnded = false;
+            
+            LoadCurrentLevel();
+            
+            if (victoryOverlay != null)
+            {
+                victoryOverlay.Hide();
+            }
+            
+            InitializeEnemyAI();
         }
     }
     
