@@ -38,6 +38,8 @@ public class BattleManager : MonoBehaviour
     {
         FindAllColonies();
         InitializeColonies();
+        InitializeEnemyAI();
+        InitializeAudioService();
     }
     
     private void FindAllColonies()
@@ -52,6 +54,23 @@ public class BattleManager : MonoBehaviour
         {
             allColonies[0].Initialize(ColonyOwner.Player, config.playerStartUnits);
             allColonies[1].Initialize(ColonyOwner.Enemy, config.enemyStartUnits);
+        }
+    }
+    
+    private void InitializeEnemyAI()
+    {
+        if (FindObjectOfType<EnemyAI>() == null)
+        {
+            gameObject.AddComponent<EnemyAI>();
+        }
+    }
+    
+    private void InitializeAudioService()
+    {
+        if (AudioService.Instance == null)
+        {
+            GameObject audioServiceObj = new GameObject("AudioService");
+            audioServiceObj.AddComponent<AudioService>();
         }
     }
     
