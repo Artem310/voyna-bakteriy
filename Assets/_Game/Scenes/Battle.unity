@@ -132,7 +132,7 @@ MonoBehaviour:
   allColonies:
   - {fileID: 800}
   - {fileID: 900}
-  tutorialManager: {fileID: 1300}
+  tutorialManager: {fileID: 1302}
 --- !u!114 &203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -689,7 +689,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1300}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abc456def789012345678901234567890, type: 3}
+  m_Script: {fileID: 11500000, guid: abc456def78901234567890123456789, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   tutorialFingerObject: {fileID: 1100}
