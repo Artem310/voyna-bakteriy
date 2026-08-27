@@ -16,8 +16,13 @@ MonoBehaviour:
   tentacleSpeed: 5
   unitTransferRate: 10
   currentLevel: 1
-  playerStartUnits: 50
-  enemyStartUnits: 15
+  levels:
+  - {fileID: 11400000, guid: 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d, type: 2}
+  - {fileID: 11400000, guid: 2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e, type: 2}
+  - {fileID: 11400000, guid: 3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f, type: 2}
+  - {fileID: 11400000, guid: 4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f90, type: 2}
+  - {fileID: 11400000, guid: 5e6f7a8b9c0d1e2f3a4b5c6d7e8f9012, type: 2}
+  - {fileID: 11400000, guid: 6f7a8b9c0d1e2f3a4b5c6d7e8f901234, type: 2}
   colonyRadius: 1
   captureThreshold: 1
   tentacleMinMass: 10
