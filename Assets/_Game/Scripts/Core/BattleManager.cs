@@ -61,7 +61,8 @@ public class BattleManager : MonoBehaviour
     
     private void ClearColonies()
     {
-        foreach (var colony in allColonies)
+        Colony[] existingColonies = FindObjectsOfType<Colony>();
+        foreach (var colony in existingColonies)
         {
             if (colony != null)
                 Destroy(colony.gameObject);
