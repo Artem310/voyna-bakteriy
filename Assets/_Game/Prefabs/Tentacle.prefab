@@ -42,7 +42,7 @@ LineRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_Materials:
-  - {fileID: 2100000, guid: abc123def456789012345678901234567, type: 2}
+  - {fileID: 2100000, guid: b0a04436e6d4738e1db0f04bbb4f0296, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
