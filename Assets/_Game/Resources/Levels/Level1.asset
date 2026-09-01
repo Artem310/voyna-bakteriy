@@ -15,9 +15,9 @@ MonoBehaviour:
   levelNumber: 1
   aiActionInterval: 4
   colonies:
-  - position: {x: -3, y: 0}
+  - position: {x: -2.5, y: 0}
     mass: 50
     owner: 1
-  - position: {x: 3, y: 0}
+  - position: {x: 2.5, y: 0}
     mass: 15
     owner: 2

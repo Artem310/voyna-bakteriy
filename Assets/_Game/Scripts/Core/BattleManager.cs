@@ -49,45 +49,14 @@ public class BattleManager : MonoBehaviour
     
     public void LoadCurrentLevel()
     {
-        FindExistingColonies();
-        
         LevelDefinition levelDef = config.GetCurrentLevelDefinition();
         if (levelDef == null)
             return;
         
         config.aiActionInterval = levelDef.aiActionInterval;
         
-        if (allColonies.Count == 0)
-        {
-            SpawnColoniesFromDefinition(levelDef);
-        }
-        else
-        {
-            InitializeExistingColonies(levelDef);
-        }
-    }
-    
-    private void FindExistingColonies()
-    {
-        allColonies.Clear();
-        Colony[] foundColonies = FindObjectsOfType<Colony>();
-        allColonies.AddRange(foundColonies);
-    }
-    
-    private void InitializeExistingColonies(LevelDefinition levelDef)
-    {
-        if (levelDef.colonies == null || levelDef.colonies.Count == 0)
-            return;
-        
-        int count = Mathf.Min(allColonies.Count, levelDef.colonies.Count);
-        for (int i = 0; i < count; i++)
-        {
-            SetColonySprites(allColonies[i]);
-            allColonies[i].Initialize(levelDef.colonies[i].owner, levelDef.colonies[i].mass);
-            
-            Vector3 targetPos = new Vector3(levelDef.colonies[i].position.x, levelDef.colonies[i].position.y, 0f);
-            allColonies[i].transform.position = targetPos;
-        }
+        ClearColonies();
+        SpawnColoniesFromDefinition(levelDef);
     }
     
     private void ClearColonies()
