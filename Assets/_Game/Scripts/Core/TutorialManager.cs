@@ -13,13 +13,12 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private float dashLength = 0.2f;
     [SerializeField] private float dashGap = 0.1f;
     
-    [Header("Tutorial Path")]
-    [SerializeField] private Colony playerColony;
-    [SerializeField] private Colony enemyColony;
-    
     private const string TUTORIAL_PREF_KEY = "tutorialSwipeDone";
     private bool tutorialActive = false;
     private bool tutorialCompleted = false;
+    
+    private Colony playerColony;
+    private Colony enemyColony;
     
     private void Start()
     {
@@ -29,13 +28,43 @@ public class TutorialManager : MonoBehaviour
             return;
         }
         
-        SetupTutorial();
-        ShowTutorial();
+        if (BattleManager.Instance != null && BattleManager.Instance.Config.currentLevel != 1)
+        {
+            HideTutorial();
+            return;
+        }
+        
+        StartCoroutine(WaitForColoniesAndShowTutorial());
     }
     
     private bool IsTutorialCompleted()
     {
         return PlayerPrefs.GetInt(TUTORIAL_PREF_KEY, 0) == 1;
+    }
+    
+    private IEnumerator WaitForColoniesAndShowTutorial()
+    {
+        while (BattleManager.Instance == null)
+        {
+            yield return null;
+        }
+        
+        while (playerColony == null || enemyColony == null)
+        {
+            var colonies = BattleManager.Instance.GetAllColonies();
+            foreach (var colony in colonies)
+            {
+                if (colony.Owner == ColonyOwner.Player)
+                    playerColony = colony;
+                else if (colony.Owner == ColonyOwner.Enemy)
+                    enemyColony = colony;
+            }
+            
+            yield return null;
+        }
+        
+        SetupTutorial();
+        ShowTutorial();
     }
     
     private void SetupTutorial()
@@ -53,18 +82,6 @@ public class TutorialManager : MonoBehaviour
             dashedLineRenderer.endColor = new Color(1f, 1f, 1f, 0.6f);
             dashedLineRenderer.sortingOrder = 9;
             dashedLineRenderer.useWorldSpace = true;
-        }
-        
-        if (BattleManager.Instance != null)
-        {
-            var colonies = FindObjectsOfType<Colony>();
-            foreach (var colony in colonies)
-            {
-                if (colony.Owner == ColonyOwner.Player)
-                    playerColony = colony;
-                else if (colony.Owner == ColonyOwner.Enemy)
-                    enemyColony = colony;
-            }
         }
     }
     
