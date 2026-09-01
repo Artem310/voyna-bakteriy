@@ -13,9 +13,8 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private float dashLength = 0.2f;
     [SerializeField] private float dashGap = 0.1f;
     
-    [Header("Tutorial Path")]
-    [SerializeField] private Colony playerColony;
-    [SerializeField] private Colony enemyColony;
+    private Colony playerColony;
+    private Colony enemyColony;
     
     private const string TUTORIAL_PREF_KEY = "tutorialSwipeDone";
     private bool tutorialActive = false;
@@ -30,7 +29,7 @@ public class TutorialManager : MonoBehaviour
         }
         
         SetupTutorial();
-        ShowTutorial();
+        StartCoroutine(WaitForColoniesAndShowTutorial());
     }
     
     private bool IsTutorialCompleted()
@@ -54,18 +53,31 @@ public class TutorialManager : MonoBehaviour
             dashedLineRenderer.sortingOrder = 9;
             dashedLineRenderer.useWorldSpace = true;
         }
-        
-        if (BattleManager.Instance != null)
+    }
+    
+    private IEnumerator WaitForColoniesAndShowTutorial()
+    {
+        while (playerColony == null || enemyColony == null)
         {
-            var colonies = FindObjectsOfType<Colony>();
-            foreach (var colony in colonies)
+            if (BattleManager.Instance != null)
             {
-                if (colony.Owner == ColonyOwner.Player)
-                    playerColony = colony;
-                else if (colony.Owner == ColonyOwner.Enemy)
-                    enemyColony = colony;
+                var colonies = BattleManager.Instance.GetAllColonies();
+                foreach (var colony in colonies)
+                {
+                    if (colony.Owner == ColonyOwner.Player)
+                        playerColony = colony;
+                    else if (colony.Owner == ColonyOwner.Enemy)
+                        enemyColony = colony;
+                }
+            }
+            
+            if (playerColony == null || enemyColony == null)
+            {
+                yield return null;
             }
         }
+        
+        ShowTutorial();
     }
     
     private void ShowTutorial()
