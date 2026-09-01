@@ -10,8 +10,7 @@ public class GameConfig : ScriptableObject
     
     [Header("Level Settings")]
     public int currentLevel = 1;
-    public int playerStartUnits = 50;
-    public int enemyStartUnits = 15;
+    public LevelDefinition[] levels;
     
     [Header("Colony Settings")]
     public float colonyRadius = 1f;
@@ -24,4 +23,13 @@ public class GameConfig : ScriptableObject
     [Header("Enemy AI")]
     public float aiActionInterval = 4f;
     public int aiEnabledFromLevel = 2;
+    
+    public LevelDefinition GetCurrentLevelDefinition()
+    {
+        if (levels == null || levels.Length == 0)
+            return null;
+        
+        int index = Mathf.Clamp(currentLevel - 1, 0, levels.Length - 1);
+        return levels[index];
+    }
 }

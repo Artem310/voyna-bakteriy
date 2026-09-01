@@ -5,6 +5,8 @@ public class GameSceneManager : MonoBehaviour
 {
     public static GameSceneManager Instance { get; private set; }
     
+    [SerializeField] private GameConfig gameConfig;
+    
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -23,6 +25,12 @@ public class GameSceneManager : MonoBehaviour
     
     public void LoadBattle()
     {
+        if (gameConfig != null)
+        {
+            int completedLevel = PlayerPrefs.GetInt("CompletedLevel", 0);
+            gameConfig.currentLevel = Mathf.Clamp(completedLevel + 1, 1, 6);
+        }
+        
         SceneManager.LoadScene("Battle");
     }
     

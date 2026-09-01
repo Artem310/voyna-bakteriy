@@ -17,6 +17,9 @@ public class Colony : MonoBehaviour
     [Header("Visual")]
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private TextMeshPro unitsText;
+    [SerializeField] private Sprite playerSprite;
+    [SerializeField] private Sprite enemySprite;
+    [SerializeField] private Sprite neutralSprite;
     [SerializeField] private Color playerColor = new Color(0f, 0.8f, 1f);
     [SerializeField] private Color enemyColor = new Color(1f, 0.2f, 0.5f);
     [SerializeField] private Color neutralColor = new Color(0.5f, 0.5f, 0.5f);
@@ -55,6 +58,14 @@ public class Colony : MonoBehaviour
     {
         this.owner = owner;
         this.units = Mathf.Max(startUnits, 0f);
+        UpdateVisuals();
+    }
+    
+    public void SetSprites(Sprite player, Sprite enemy, Sprite neutral)
+    {
+        playerSprite = player;
+        enemySprite = enemy;
+        neutralSprite = neutral;
         UpdateVisuals();
     }
     
@@ -127,6 +138,18 @@ public class Colony : MonoBehaviour
     {
         if (spriteRenderer != null)
         {
+            Sprite targetSprite = owner switch
+            {
+                ColonyOwner.Player => playerSprite,
+                ColonyOwner.Enemy => enemySprite,
+                _ => neutralSprite
+            };
+            
+            if (targetSprite != null)
+            {
+                spriteRenderer.sprite = targetSprite;
+            }
+            
             spriteRenderer.color = owner switch
             {
                 ColonyOwner.Player => playerColor,

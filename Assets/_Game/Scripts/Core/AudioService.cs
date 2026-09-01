@@ -33,6 +33,12 @@ public class AudioService : MonoBehaviour
     private Coroutine fadeCoroutine;
     private string currentSceneName;
     
+    private AudioSource tentacleLaunchSource1;
+    private AudioSource tentacleLaunchSource2;
+    private AudioSource captureSource;
+    private float tentacle1EndTime;
+    private float tentacle2EndTime;
+    
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -101,6 +107,10 @@ public class AudioService : MonoBehaviour
             musicSource = gameObject.AddComponent<AudioSource>();
         }
         
+        tentacleLaunchSource1 = gameObject.AddComponent<AudioSource>();
+        tentacleLaunchSource2 = gameObject.AddComponent<AudioSource>();
+        captureSource = gameObject.AddComponent<AudioSource>();
+        
         sfxSource.spatialBlend = 0f;
         sfxSource.spatialize = false;
         sfxSource.dopplerLevel = 0f;
@@ -111,6 +121,19 @@ public class AudioService : MonoBehaviour
         musicSource.dopplerLevel = 0f;
         musicSource.loop = true;
         musicSource.volume = bgmVolume;
+        
+        ConfigureAudioSource(tentacleLaunchSource1);
+        ConfigureAudioSource(tentacleLaunchSource2);
+        ConfigureAudioSource(captureSource);
+    }
+    
+    private void ConfigureAudioSource(AudioSource source)
+    {
+        source.spatialBlend = 0f;
+        source.spatialize = false;
+        source.dopplerLevel = 0f;
+        source.volume = 1f;
+        source.playOnAwake = false;
     }
     
     public void PlayTentacleLaunch()
@@ -122,13 +145,29 @@ public class AudioService : MonoBehaviour
             ? sfxTentacleLaunch02 
             : sfxTentacleLaunch;
         
-        if (clipToPlay != null)
+        if (clipToPlay == null)
+            return;
+        
+        float currentTime = Time.time;
+        bool source1Playing = tentacle1EndTime > currentTime;
+        bool source2Playing = tentacle2EndTime > currentTime;
+        
+        if (source1Playing && source2Playing)
         {
-            float pitch = Random.Range(0.97f, 1.03f);
-            sfxSource.pitch = pitch;
-            sfxSource.PlayOneShot(clipToPlay);
-            sfxSource.pitch = 1f;
+            return;
         }
+        
+        AudioSource sourceToUse = !source1Playing ? tentacleLaunchSource1 : tentacleLaunchSource2;
+        float pitch = Random.Range(0.97f, 1.03f);
+        sourceToUse.pitch = pitch;
+        sourceToUse.PlayOneShot(clipToPlay);
+        sourceToUse.pitch = 1f;
+        
+        float endTime = currentTime + clipToPlay.length;
+        if (sourceToUse == tentacleLaunchSource1)
+            tentacle1EndTime = endTime;
+        else
+            tentacle2EndTime = endTime;
     }
     
     public void PlayCapture()
@@ -137,10 +176,16 @@ public class AudioService : MonoBehaviour
             ? sfxCapture02 
             : sfxCapture;
         
-        if (clipToPlay != null)
+        if (clipToPlay == null)
+            return;
+        
+        if (captureSource.isPlaying)
         {
-            sfxSource.PlayOneShot(clipToPlay, captureVolume);
+            captureSource.Stop();
         }
+        
+        captureSource.volume = captureVolume;
+        captureSource.PlayOneShot(clipToPlay);
     }
     
     public void PlayGrow()
